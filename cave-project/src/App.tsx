@@ -1,16 +1,16 @@
 import { Routes, Route } from "react-router-dom";
-import bidPage from "./pages/bid";
-import personalDataPage from "./pages/personalData";
-import confirmationPage from "./pages/confirmation";
-import thankYouPage from "./pages/thankYou";
+import BidPage from "./pages/bid";
+import PersonalDataPage from "./pages/personalData";
+import ConfirmationPage from "./pages/confirmation";
+import ThankYouPage from "./pages/thankYou";
 
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<bidPage />} />
-      <Route path="/dados" element={<personalDataPage />} />
-      <Route path="/confirmacao" element={<confirmationPage />} />
-      <Route path="/obrigado" element={<thankYouPage />} />
+      <Route path="/" element={<BidPage />} />
+      <Route path="/dados" element={<PersonalDataPage />} />
+      <Route path="/confirmacao" element={<ConfirmationPage />} />
+      <Route path="/obrigado" element={<ThankYouPage />} />
     </Routes>
   );
 }
