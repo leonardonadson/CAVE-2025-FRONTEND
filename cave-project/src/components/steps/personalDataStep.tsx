@@ -1,4 +1,4 @@
-import React, { useMemo, type ChangeEvent } from 'react';
+import { useMemo, type ChangeEvent } from 'react';
 import { useBid } from '../../context/bidContext';
 import ActionButton from '../actionButton';
 

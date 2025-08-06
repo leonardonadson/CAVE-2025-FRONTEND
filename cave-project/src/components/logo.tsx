@@ -1,5 +1,3 @@
-import React from 'react';
-
 const Logo = () => (
   <div className="text-center font-bold text-white py-6">
     {/* ADAPTAÇÃO RESPONSIVA: Tamanhos de fonte e espaçamento ajustados. */}

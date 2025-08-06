@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useBid } from '../../context/bidContext';
 import Logo from '../logo';
 

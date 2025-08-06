@@ -1,4 +1,3 @@
-import React from 'react';
 import { Plus, Minus } from 'lucide-react';
 import { useBid, formatCurrency } from '../../context/bidContext';
 import ActionButton from '../actionButton';

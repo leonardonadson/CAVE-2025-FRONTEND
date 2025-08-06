@@ -11,10 +11,16 @@ export interface BidContextType {
   setBidValue: (value: number) => void;
   userData: UserData;
   setUserData: (data: UserData) => void;
-  highestBid: number; // Renomeado de 'lastBid'
-  confirmAndPlaceBid: () => void; // Nova função para confirmar o lance
-  resetForm: () => void; // Renomeado de 'resetState'
+  highestBid: number;
+  confirmAndPlaceBid: () => Promise<void>;
+  resetForm: () => void;
   currentStep: number;
   setCurrentStep: (step: number) => void;
   totalSteps: number;
+  isSubmitting?: boolean;
+  error?: string | null;
+  allBids?: any[];
+  fetchAllBids?: () => Promise<any[]>;
+  clearAllBids?: () => Promise<void>;
+  generateReport?: (format: "csv" | "excel") => Promise<void>;
 }
