@@ -1,83 +1,65 @@
-import { createContext, useState, useContext, type ReactNode } from "react";
-import type { Bid, Auction, BidContextType } from "../types/bid";
+import React, { createContext, useState, useContext, type ReactNode, useEffect } from "react";
+import type { BidContextType, UserData } from "../types/bid.d.ts";
+
+const INITIAL_HIGHEST_BID = 700;
+const MINIMUM_INCREMENT = 100;
+const TOTAL_STEPS = 4;
+const INITIAL_USER_DATA: UserData = {
+  name: "",
+  cpf: "",
+  phone: "",
+};
 
 const BidContext = createContext<BidContextType | undefined>(undefined);
 
+export const useBid = (): BidContextType => {
+  const context = useContext(BidContext);
+  if (!context) {
+    throw new Error("useBid must be used within a BidProvider");
+  }
+  return context;
+};
+
 export const BidProvider = ({ children }: { children: ReactNode }) => {
-  const [currentAuction, setCurrentAuction] = useState<Auction | null>(null);
+  const [currentStep, setCurrentStep] = useState(0);
+  const [highestBid, setHighestBid] = useState(INITIAL_HIGHEST_BID);
+  const [bidValue, setBidValue] = useState(highestBid + MINIMUM_INCREMENT);
+  const [userData, setUserData] = useState<UserData>(INITIAL_USER_DATA);
 
-  const [bids, setBids] = useState<Bid[]>([]);
-
-  const [userData, setUserData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-  });
-
-  const loadAuction = async (id: string) => {
-    const mockAuction: Auction = {
-      id,
-      name: "Example Auction",
-      initialValue: 1000,
-      image: "/path/to/image.jpg",
-      description: "Detailed auction description",
-      endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), 
-      bids: [],
-    };
-    setCurrentAuction(mockAuction);
-  };
-
-  const addBid = (value: number) => {
-    if (!currentAuction) return;
-
-    setCurrentAuction({
-      ...currentAuction,
-      initialValue: value,
-    });
-  };
-
-  const confirmBid = async (): Promise<boolean> => {
-    if (!currentAuction) return false;
-
-    try {
-      const newBid: Bid = {
-        id: Date.now().toString(),
-        value: currentAuction.initialValue,
-        user: userData.name,
-        email: userData.email,
-        phone: userData.phone,
-        date: new Date(),
-        auctionId: currentAuction.id,
-      };
-
-      setBids([...bids, newBid]);
-
-      return true;
-    } catch (error) {
-      console.error("Error confirming bid:", error);
-      return false;
+  useEffect(() => {
+    if (currentStep === 0) {
+      setBidValue(highestBid + MINIMUM_INCREMENT);
     }
+  }, [highestBid, currentStep]);
+
+  const confirmAndPlaceBid = () => {
+    setHighestBid(bidValue);
+  };
+
+  const resetForm = () => {
+    setUserData(INITIAL_USER_DATA);
+    setCurrentStep(0);
   };
 
   const value: BidContextType = {
-    currentAuction,
-    setCurrentAuction,
-    bids,
-    setBids,
+    bidValue,
+    setBidValue,
     userData,
     setUserData,
-    addBid,
-    loadAuction,
-    confirmBid,
+    highestBid,
+    confirmAndPlaceBid,
+    resetForm,
+    currentStep,
+    setCurrentStep,
+    totalSteps: TOTAL_STEPS,
   };
 
   return <BidContext.Provider value={value}>{children}</BidContext.Provider>;
 };
 
-export const useBid = (): BidContextType => {
-  const context = useContext(BidContext);
-  if (context === undefined) {
-    throw new Error("useBid must be used within a BidProvider");
-  }
-  return context;
+export const formatCurrency = (value: number) => {
+  return new Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  }).format(value);
 };

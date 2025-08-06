@@ -1,40 +1,20 @@
-interface Bid {
-  id: string;
-  value: number;
-  user: string;
-  email: string;
-  phone: string;
-  date: Date;
-  auctionId: string;
-}
+// src/types/bid.d.ts
 
-interface Auction {
-  id: string;
+export interface UserData {
   name: string;
-  initialValue: number;
-  image: string;
-  description: string;
-  endDate: Date;
-  bids: Bid[];
+  cpf: string;
+  phone: string;
 }
 
-type BidContextType = {
-  currentAuction: Auction | null;
-  setCurrentAuction: (auction: Auction | null) => void;
-
-  bids: Bid[];
-  setBids: (bids: Bid[]) => void;
-
-  userData: {
-    name: string;
-    email: string;
-    phone: string;
-  };
-  setUserData: (data: { name: string; email: string; phone: string }) => void;
-
-  addBid: (value: number) => void;
-  loadAuction: (id: string) => Promise<void>;
-  confirmBid: () => Promise<boolean>;
-};
-
-export type { Bid, Auction, BidContextType };
+export interface BidContextType {
+  bidValue: number;
+  setBidValue: (value: number) => void;
+  userData: UserData;
+  setUserData: (data: UserData) => void;
+  highestBid: number; // Renomeado de 'lastBid'
+  confirmAndPlaceBid: () => void; // Nova função para confirmar o lance
+  resetForm: () => void; // Renomeado de 'resetState'
+  currentStep: number;
+  setCurrentStep: (step: number) => void;
+  totalSteps: number;
+}

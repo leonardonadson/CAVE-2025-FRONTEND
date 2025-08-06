@@ -1,13 +1,13 @@
-import "./index.css";
-import React from "react";
-import ReactDOM from "react-dom/client";
-import { BrowserRouter } from "react-router-dom";
-import App from "./App";
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App.tsx';
+import './index.css';
+import { BidProvider } from './context/bidContext.tsx';
 
-ReactDOM.createRoot(document.getElementById("root")!).render(
+ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <BrowserRouter>
+    <BidProvider>
       <App />
-    </BrowserRouter>
-  </React.StrictMode>
-);
+    </BidProvider>
+  </React.StrictMode>,
+)
