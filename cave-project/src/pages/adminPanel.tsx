@@ -70,7 +70,6 @@ const AdminPanel = () => {
               <th className="px-4 py-2">CPF</th>
               <th className="px-4 py-2">Telefone</th>
               <th className="px-4 py-2">Valor</th>
-              <th className="px-4 py-2">Data/Hora</th>
             </tr>
           </thead>
           <tbody>
@@ -83,9 +82,6 @@ const AdminPanel = () => {
                 <td className="px-4 py-2">{bid.cpf}</td>
                 <td className="px-4 py-2">{bid.phone}</td>
                 <td className="px-4 py-2">{formatCurrency(bid.amount)}</td>
-                <td className="px-4 py-2">
-                  {new Date(bid.timestamp).toLocaleString()}
-                </td>
               </tr>
             ))}
           </tbody>
