@@ -20,6 +20,7 @@ export interface BidContextType {
   isSubmitting?: boolean;
   error?: string | null;
   allBids?: any[];
+  isLoading?: boolean;
   fetchAllBids?: () => Promise<any[]>;
   clearAllBids?: () => Promise<void>;
   generateReport?: (format: "csv" | "excel") => Promise<void>;

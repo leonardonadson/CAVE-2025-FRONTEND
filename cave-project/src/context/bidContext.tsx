@@ -34,6 +34,31 @@ export const BidProvider = ({ children }: { children: ReactNode }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [allBids, setAllBids] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Fetch initial data when component mounts
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      try {
+        const bids = await fetchAllBids();
+        if (bids.length > 0) {
+          // Find the highest bid in the database
+          const maxBid = Math.max(...bids.map((bid: any) => bid.amount));
+          setHighestBid(maxBid);
+          setBidValue(maxBid + MINIMUM_INCREMENT);
+        }
+      } catch (err) {
+        console.error("Error fetching initial bids:", err);
+        setError(
+          err instanceof Error ? err.message : "Error fetching initial bids"
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchInitialData();
+  }, []);
 
   useEffect(() => {
     if (currentStep === 0) {
@@ -41,7 +66,6 @@ export const BidProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [highestBid, currentStep]);
 
-  // Função para buscar todos os lances
   const fetchAllBids = async () => {
     try {
       const apiUrl = import.meta.env.VITE_API_URL;
@@ -72,8 +96,8 @@ export const BidProvider = ({ children }: { children: ReactNode }) => {
         },
         body: JSON.stringify({
           amount: bidValue,
-          cpf: userData.cpf.replace(/\D/g, ""), // Remove formatação do CPF
-          phone: userData.phone.replace(/\D/g, ""), // Remove formatação do telefone
+          cpf: userData.cpf.replace(/\D/g, ""),
+          phone: userData.phone.replace(/\D/g, ""),
           name: userData.name,
         }),
       });
@@ -85,10 +109,8 @@ export const BidProvider = ({ children }: { children: ReactNode }) => {
       const data = await response.json();
       console.log("Lance enviado com sucesso:", data);
 
-      // Atualiza a lista de lances após enviar um novo
       await fetchAllBids();
-
-      // Avança para o passo de agradecimento
+      setHighestBid(bidValue); // Update the highest bid with the new value
       setCurrentStep(currentStep + 1);
     } catch (err) {
       console.error("Erro ao enviar lance:", err);
@@ -100,7 +122,6 @@ export const BidProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  // Função para limpar todos os lances (DELETE)
   const clearAllBids = async () => {
     try {
       const apiUrl = import.meta.env.VITE_API_URL;
@@ -114,14 +135,14 @@ export const BidProvider = ({ children }: { children: ReactNode }) => {
 
       console.log("Todos os lances foram removidos");
       setAllBids([]);
-      setHighestBid(INITIAL_HIGHEST_BID);
+      setHighestBid(INITIAL_HIGHEST_BID); // Reset to initial value when clearing all bids
+      setBidValue(INITIAL_HIGHEST_BID + MINIMUM_INCREMENT);
     } catch (err) {
       console.error("Erro ao limpar lances:", err);
       setError(err instanceof Error ? err.message : "Erro ao limpar lances");
     }
   };
 
-  // Função para gerar relatório
   const generateReport = async (format: "csv" | "excel") => {
     try {
       const apiUrl = import.meta.env.VITE_API_URL;
@@ -137,10 +158,7 @@ export const BidProvider = ({ children }: { children: ReactNode }) => {
         throw new Error("Erro ao gerar relatório");
       }
 
-      // Cria um blob com os dados recebidos
       const blob = await response.blob();
-
-      // Cria um link para download
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
@@ -157,7 +175,6 @@ export const BidProvider = ({ children }: { children: ReactNode }) => {
 
   const confirmAndPlaceBid = async () => {
     await submitBidToAPI();
-    setHighestBid(bidValue);
   };
 
   const resetForm = () => {
@@ -182,7 +199,22 @@ export const BidProvider = ({ children }: { children: ReactNode }) => {
     fetchAllBids,
     clearAllBids,
     generateReport,
+    isLoading,
   };
+
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      const bids = await fetchAllBids();
+      if (bids.length > 0) {
+        const maxBid = Math.max(...bids.map((bid: any) => bid.amount));
+        if (maxBid > highestBid) {
+          setHighestBid(maxBid);
+        }
+      }
+    }, 1000); 
+
+    return () => clearInterval(interval); 
+  }, [highestBid]);
 
   return <BidContext.Provider value={value}>{children}</BidContext.Provider>;
 };
