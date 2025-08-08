@@ -1,17 +1,28 @@
-import { Routes, Route } from "react-router-dom";
-import BidPage from "./pages/bid";
-import PersonalDataPage from "./pages/personalData";
-import ConfirmationPage from "./pages/confirmation";
-import ThankYouPage from "./pages/thankYou";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import BidProcess from "./pages/bidProcess";
+import AdminPanel from "./pages/adminPanel";
+import Login from "./pages/login";
+import { ProtectedRoute } from "./components/protectedRoute";
+import { useAuth } from "./hooks/useAuth";
 
 function App() {
+  const isAuthenticated = useAuth();
+
   return (
-    <Routes>
-      <Route path="/" element={<BidPage />} />
-      <Route path="/dados" element={<PersonalDataPage />} />
-      <Route path="/confirmacao" element={<ConfirmationPage />} />
-      <Route path="/obrigado" element={<ThankYouPage />} />
-    </Routes>
+    <Router>
+      <Routes>
+        <Route path="/" element={<BidProcess />} />
+        <Route path="/login" element={<Login />} />
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute isAuthenticated={isAuthenticated}>
+              <AdminPanel />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </Router>
   );
 }
 
