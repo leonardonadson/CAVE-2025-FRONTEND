@@ -6,10 +6,15 @@ import PersonalDataStep from "../components/steps/personalDataStep";
 import ConfirmationStep from "../components/steps/confirmationStep";
 import ThankYouStep from "../components/steps/thankYouStep";
 import StepperDots from "../components/stepperDots";
-import Logo from "../components/logo";
+import logoCave from "../assets/logo-cave-branco.png";
+import tocandoAVida from "../assets/tocando-a-vida.png";
+import ifrnLogo from "../assets/ifrn.png";
+import csaLogo from "../assets/logo-csa-por-extenso.png";
 
 const BidProcess = () => {
-  const { currentStep, totalSteps } = useBid();
+  const { currentStep } = useBid();
+  
+  
 
   const steps = [
     <BidStep />,
@@ -29,11 +34,15 @@ const BidProcess = () => {
     ease: "anticipate",
     duration: 0.5,
   } as const;
-
   return (
-    <div className="bg-gradient-to-b from-gray-900 to-black min-h-screen w-full flex items-center justify-center p-4">
-      <div className="w-full max-w-md md:max-w-lg lg:max-w-xl bg-black/25 p-6 sm:p-8 rounded-2xl shadow-2xl border border-white/10">
-        <main>
+    <div className="bg-gradient-to-b from-gray-900 to-black min-h-screen w-full flex flex-col items-center justify-center p-4">
+      <div className="w-full max-w-md md:max-w-lg lg:max-w-xl bg-black/25 p-6 sm:p-8 rounded-2xl shadow-2xl border border-white/10 flex flex-col">
+        <img
+          src={logoCave}
+          alt="Logo Principal"
+          className="w-40 sm:w-48 mx-auto"
+        />
+        <main className="flex-grow">
           <AnimatePresence mode="wait">
             <motion.div
               key={currentStep}
@@ -48,15 +57,31 @@ const BidProcess = () => {
             </motion.div>
           </AnimatePresence>
         </main>
-
-        {currentStep < totalSteps - 1 && (
-          <footer className="w-full pt-6">
-            <StepperDots />
-            <Logo />
-          </footer>
-        )}
+        <footer className="w-full pt-6">
+          <StepperDots />
+          <div className="mt-8 flex flex-col items-center">
+            <img
+              src={tocandoAVida}
+              alt="Patrocinador 1"
+              className="w-28 sm:w-32 mb-4"
+            />
+            <div className="flex gap-6">
+              <img
+                src={ifrnLogo}
+                alt="Patrocinador 2"
+                className="w-24 sm:w-28"
+              />
+              <img
+                src={csaLogo}
+                alt="Patrocinador 3"
+                className="w-24 sm:w-28"
+              />
+            </div>
+          </div>
+        </footer>
       </div>
     </div>
+    
   );
 };
 
