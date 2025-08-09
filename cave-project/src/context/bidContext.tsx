@@ -36,13 +36,11 @@ export const BidProvider = ({ children }: { children: ReactNode }) => {
   const [allBids, setAllBids] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Fetch initial data when component mounts
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
         const bids = await fetchAllBids();
         if (bids.length > 0) {
-          // Find the highest bid in the database
           const maxBid = Math.max(...bids.map((bid: any) => bid.amount));
           setHighestBid(maxBid);
           setBidValue(maxBid + MINIMUM_INCREMENT);
@@ -110,7 +108,7 @@ export const BidProvider = ({ children }: { children: ReactNode }) => {
       console.log("Lance enviado com sucesso:", data);
 
       await fetchAllBids();
-      setHighestBid(bidValue); // Update the highest bid with the new value
+      setHighestBid(bidValue);
       setCurrentStep(currentStep + 1);
     } catch (err) {
       console.error("Erro ao enviar lance:", err);
@@ -124,9 +122,20 @@ export const BidProvider = ({ children }: { children: ReactNode }) => {
 
   const clearAllBids = async () => {
     try {
+      const username = localStorage.getItem("username");
+      const password = localStorage.getItem("password");
+
+      if (!username || !password) {
+        throw new Error("Credenciais não encontradas.");
+      }
+      const encodedCredentials = btoa(`${username}:${password}`);
+
       const apiUrl = import.meta.env.VITE_API_URL;
       const response = await fetch(`${apiUrl}/bids/`, {
         method: "DELETE",
+        headers: {
+          Authorization: `Basic ${encodedCredentials}`,
+        },
       });
 
       if (!response.ok) {
@@ -135,7 +144,7 @@ export const BidProvider = ({ children }: { children: ReactNode }) => {
 
       console.log("Todos os lances foram removidos");
       setAllBids([]);
-      setHighestBid(INITIAL_HIGHEST_BID); // Reset to initial value when clearing all bids
+      setHighestBid(INITIAL_HIGHEST_BID);
       setBidValue(INITIAL_HIGHEST_BID + MINIMUM_INCREMENT);
     } catch (err) {
       console.error("Erro ao limpar lances:", err);
@@ -145,11 +154,20 @@ export const BidProvider = ({ children }: { children: ReactNode }) => {
 
   const generateReport = async (format: "csv" | "excel") => {
     try {
+      const username = localStorage.getItem("username");
+      const password = localStorage.getItem("password");
+
+      if (!username || !password) {
+        throw new Error("Credenciais não encontradas.");
+      }
+      const encodedCredentials = btoa(`${username}:${password}`);
+
       const apiUrl = import.meta.env.VITE_API_URL;
       const response = await fetch(`${apiUrl}/reports/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Basic ${encodedCredentials}`,
         },
         body: JSON.stringify({ format }),
       });
@@ -211,9 +229,9 @@ export const BidProvider = ({ children }: { children: ReactNode }) => {
           setHighestBid(maxBid);
         }
       }
-    }, 1000); 
+    }, 1000);
 
-    return () => clearInterval(interval); 
+    return () => clearInterval(interval);
   }, [highestBid]);
 
   return <BidContext.Provider value={value}>{children}</BidContext.Provider>;
