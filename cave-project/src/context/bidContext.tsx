@@ -180,7 +180,11 @@ export const BidProvider = ({ children }: { children: ReactNode }) => {
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `relatorio_lances.${format}`;
+      if (format === "csv") {
+        a.download = "relatorio_lances.csv";
+      } else if (format === "excel") {
+        a.download = "relatorio_lances.xlsx";
+      }
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);

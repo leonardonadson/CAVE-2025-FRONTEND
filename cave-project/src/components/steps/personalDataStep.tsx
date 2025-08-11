@@ -36,11 +36,11 @@ const PersonalDataStep = () => {
         </div>
         <div>
           <label className="font-semibold mb-2 block" htmlFor="cpf">CPF</label>
-          <input type="text" id="cpf" name="cpf" value={userData.cpf} onChange={handleChange} placeholder="123.456.789-00" maxLength={14} className="w-full bg-transparent border-2 border-gray-600 rounded-xl p-4 focus:border-[#F6648B] focus:outline-none" />
+          <input type="text" inputMode="numeric" id="cpf" name="cpf" value={userData.cpf} onChange={handleChange} placeholder="123.456.789-00" maxLength={14} className="w-full bg-transparent border-2 border-gray-600 rounded-xl p-4 focus:border-[#F6648B] focus:outline-none" />
         </div>
         <div>
           <label className="font-semibold mb-2 block" htmlFor="phone">Contato</label>
-          <input type="text" id="phone" name="phone" value={userData.phone} onChange={handleChange} placeholder="(00) 00000-0000" maxLength={15} className="w-full bg-transparent border-2 border-gray-600 rounded-xl p-4 focus:border-[#F6648B] focus:outline-none" />
+          <input type="text" inputMode="numeric" id="phone" name="phone" value={userData.phone} onChange={handleChange} placeholder="(00) 00000-0000" maxLength={15} className="w-full bg-transparent border-2 border-gray-600 rounded-xl p-4 focus:border-[#F6648B] focus:outline-none" />
         </div>
       </form>
       
