@@ -1,36 +1,39 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
   const apiUrl = import.meta.env.VITE_API_URL;
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setIsLoading(true); 
 
     try {
       const credentials = `${username}:${password}`;
       const encodedCredentials = btoa(credentials);
 
-      const res = await fetch(`${apiUrl}/reports/`, {
+      const response = await fetch(`${apiUrl}/auth/validate_auth`, {
         method: "GET",
         headers: {
           Authorization: `Basic ${encodedCredentials}`,
         },
       });
 
-      if (res.ok) {
+      if (response.ok) {
         localStorage.setItem("username", username);
         localStorage.setItem("password", password);
-        navigate("/admin");
+        window.location.href = "/admin";
       } else {
         setError("Credenciais inválidas.");
       }
     } catch {
       setError("Erro ao conectar à API.");
+    } finally {
+      setIsLoading(false); 
     }
   };
 
@@ -59,11 +62,13 @@ export default function Login() {
           className="w-full p-2 mb-4 rounded bg-gray-800 border border-gray-700"
         />
 
+        {/* 3. Modificar o botão */}
         <button
           type="submit"
+          disabled={isLoading}
           className="w-full flex items-center justify-center gap-2 bg-[#F6648B] text-white font-bold py-2 px-6 rounded-full text-lg shadow-lg shadow-[#f6648b]/20 hover:scale-105 transition-transform duration-300 disabled:bg-gray-500 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100"
         >
-          Entrar
+          {isLoading ? "Carregando..." : "Avançar"}
         </button>
       </form>
     </div>

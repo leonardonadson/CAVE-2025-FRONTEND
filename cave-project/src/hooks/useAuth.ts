@@ -16,7 +16,7 @@ export function useAuth() {
     const credentials = `${username}:${password}`;
     const encodedCredentials = btoa(credentials);
 
-    fetch(`${apiUrl}/reports/`, {
+    fetch(`${apiUrl}/auth/validate_auth`, {
       method: "GET",
       headers: {
         Authorization: `Basic ${encodedCredentials}`,
