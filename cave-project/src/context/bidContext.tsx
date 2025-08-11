@@ -220,20 +220,6 @@ export const BidProvider = ({ children }: { children: ReactNode }) => {
     isLoading,
   };
 
-  useEffect(() => {
-    const interval = setInterval(async () => {
-      const bids = await fetchAllBids();
-      if (bids.length > 0) {
-        const maxBid = Math.max(...bids.map((bid: any) => bid.amount));
-        if (maxBid > highestBid) {
-          setHighestBid(maxBid);
-        }
-      }
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [highestBid]);
-
   return <BidContext.Provider value={value}>{children}</BidContext.Provider>;
 };
 
