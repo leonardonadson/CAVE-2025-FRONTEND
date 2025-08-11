@@ -4,11 +4,13 @@ export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const apiUrl = import.meta.env.VITE_API_URL;
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setIsLoading(true); 
 
     try {
       const credentials = `${username}:${password}`;
@@ -30,6 +32,8 @@ export default function Login() {
       }
     } catch {
       setError("Erro ao conectar à API.");
+    } finally {
+      setIsLoading(false); 
     }
   };
 
@@ -58,11 +62,13 @@ export default function Login() {
           className="w-full p-2 mb-4 rounded bg-gray-800 border border-gray-700"
         />
 
+        {/* 3. Modificar o botão */}
         <button
           type="submit"
+          disabled={isLoading}
           className="w-full flex items-center justify-center gap-2 bg-[#F6648B] text-white font-bold py-2 px-6 rounded-full text-lg shadow-lg shadow-[#f6648b]/20 hover:scale-105 transition-transform duration-300 disabled:bg-gray-500 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100"
         >
-          Avançar
+          {isLoading ? "Carregando..." : "Avançar"}
         </button>
       </form>
     </div>
