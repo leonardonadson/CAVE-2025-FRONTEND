@@ -13,7 +13,7 @@ import ifrnLogo from "../assets/ifrn.png";
 import csaLogo from "../assets/logo-csa-por-extenso.png";
 
 const BidProcess = () => {
-  const { currentStep, allBids } = useBid();
+  const { currentStep } = useBid();
 
   useEffect(() => {
     const interval = setInterval(() => {
