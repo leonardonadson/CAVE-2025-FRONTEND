@@ -6,7 +6,6 @@ const PersonalDataStep = () => {
   const { userData, setUserData, setCurrentStep, currentStep } = useBid();
   const [errors, setErrors] = useState<{ name?: string; cpf?: string; phone?: string }>({});
 
-  // Validação real de CPF
   function validateCPF(cpf: string) {
     cpf = cpf.replace(/\D/g, '');
     if (cpf.length !== 11 || /^([0-9])\1+$/.test(cpf)) return false;
@@ -23,10 +22,8 @@ const PersonalDataStep = () => {
     return true;
   }
 
-  // Validação real de telefone brasileiro (celular)
   function validatePhone(phone: string) {
     const phoneDigits = phone.replace(/\D/g, '');
-    // DDD + 9 dígitos (celular)
     return /^\d{2}9\d{8}$/.test(phoneDigits);
   }
 

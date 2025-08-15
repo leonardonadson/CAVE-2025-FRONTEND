@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useBid, formatCurrency } from "../context/bidContext";
 import ActionButton from "../components/actionButton";
@@ -24,23 +24,47 @@ const formatPhone = (phone: string) => {
 };
 
 const AdminPanel = () => {
+  const [deletingBid, setDeletingBid] = useState<number | null>(null);
+
+  const handleDeleteBid = async (bidValue: number) => {
+    const isConfirmed = window.confirm("Deseja realmente excluir este lance?");
+    if (!isConfirmed) return;
+    setDeletingBid(bidValue);
+    try {
+      const username = localStorage.getItem("username");
+      const password = localStorage.getItem("password");
+      if (!username || !password) throw new Error("Credenciais não encontradas.");
+      const encodedCredentials = btoa(`${username}:${password}`);
+      const apiUrl = import.meta.env.VITE_API_URL;
+      const response = await fetch(`${apiUrl}/bids/${bidValue}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Basic ${encodedCredentials}`,
+        },
+      });
+      if (!response.ok) throw new Error("Erro ao excluir lance");
+      if (typeof window !== "undefined") {
+        if (fetchAllBids) await fetchAllBids();
+      }
+    } catch (err) {
+      console.error("Erro ao excluir lance:", err);
+      alert("Erro ao excluir lance: " + (err instanceof Error ? err.message : "Desconhecido"));
+    } finally {
+      setDeletingBid(null);
+    }
+  };
   const {
     allBids,
-    fetchAllBids,
     clearAllBids,
     generateReport,
     error,
     highestBid,
+    fetchAllBids,
   } = useBid();
   const navigate = useNavigate();
   const [isDownloading, setIsDownloading] = useState(false);
   const [copiedItem, setCopiedItem] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (fetchAllBids) {
-      fetchAllBids();
-    }
-  }, []);
 
   const highestBidder = useMemo(() => {
     if (!allBids || allBids.length === 0) return null;
@@ -82,9 +106,6 @@ const AdminPanel = () => {
       try {
         if (clearAllBids) {
           await clearAllBids();
-          if (fetchAllBids) {
-            await fetchAllBids();
-          }
         }
       } catch (err) {
         console.error("Erro ao limpar lances:", err);
@@ -179,6 +200,7 @@ const AdminPanel = () => {
                 <th className="px-4 py-3 text-left">CPF</th>
                 <th className="px-4 py-3 text-left">Telefone</th>
                 <th className="px-4 py-3 text-left">Valor</th>
+                <th className="px-4 py-3 text-left">Ações</th>
               </tr>
             </thead>
             <tbody>
@@ -186,7 +208,7 @@ const AdminPanel = () => {
                 sortedBids.map((bid, index) => (
                   <tr
                     key={index}
-                    className={`${
+                    className={`$
                       index % 2 === 0 ? "bg-gray-800" : "bg-gray-900"
                     } hover:bg-gray-700 transition-colors`}
                   >
@@ -209,6 +231,17 @@ const AdminPanel = () => {
                     </td>
                     <td className="px-4 py-2 font-medium">
                       {formatCurrency(bid.amount)}
+                    </td>
+                    <td className="px-4 py-2">
+                      <button
+                        onClick={() => handleDeleteBid(bid.amount)}
+                        className="text-red-500 hover:text-red-700 transition-colors flex items-center gap-1"
+                        disabled={deletingBid === bid.amount}
+                        title="Excluir lance"
+                      >
+                        <Trash2 size={16} />
+                        {deletingBid === bid.amount ? "Excluindo..." : "Excluir"}
+                      </button>
                     </td>
                   </tr>
                 ))

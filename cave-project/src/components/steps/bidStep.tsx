@@ -7,7 +7,6 @@ const BidStep = () => {
   const { bidValue, setBidValue, highestBid, setCurrentStep, currentStep } = useBid();
   const [minValue, setMinValue] = useState(800);
 
-  // Atualiza minValue quando highestBid muda
   useEffect(() => {
     if (highestBid && highestBid + 100 > minValue) {
       setMinValue(highestBid + 100);
@@ -26,7 +25,6 @@ const BidStep = () => {
       {minValue > 800 && (
         <div className="text-center mt-6">
           <p className="text-base sm:text-lg text-gray-300">Último lance</p>
-          {/* ADAPTAÇÃO RESPONSIVA: Tamanho da fonte ajustado para ecrãs menores. */}
           <h2 className="text-4xl sm:text-5xl font-bold">{formatCurrency(highestBid)}</h2>
         </div>
       )}

@@ -1,5 +1,3 @@
-// src/types/bid.d.ts
-
 export interface UserData {
   name: string;
   cpf: string;
@@ -24,4 +22,5 @@ export interface BidContextType {
   fetchAllBids?: () => Promise<any[]>;
   clearAllBids?: () => Promise<void>;
   generateReport?: (format: "csv" | "excel") => Promise<void>;
+  bidsVersion?: number;
 }

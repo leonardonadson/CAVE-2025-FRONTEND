@@ -35,6 +35,7 @@ export const BidProvider = ({ children }: { children: ReactNode }) => {
   const [error, setError] = useState<string | null>(null);
   const [allBids, setAllBids] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [bidsVersion, setBidsVersion] = useState(0);
 
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -72,7 +73,8 @@ export const BidProvider = ({ children }: { children: ReactNode }) => {
         throw new Error("Erro ao buscar lances");
       }
       const data = await response.json();
-      setAllBids(data);
+  setAllBids(data);
+  setBidsVersion((v) => v + 1);
       return data;
     } catch (err) {
       console.error("Erro ao buscar lances:", err);
@@ -107,7 +109,8 @@ export const BidProvider = ({ children }: { children: ReactNode }) => {
       const data = await response.json();
       console.log("Lance enviado com sucesso:", data);
 
-      await fetchAllBids();
+  await fetchAllBids();
+  setBidsVersion((v) => v + 1);
       setHighestBid(bidValue);
       setCurrentStep(currentStep + 1);
     } catch (err) {
@@ -146,6 +149,8 @@ export const BidProvider = ({ children }: { children: ReactNode }) => {
       setAllBids([]);
       setHighestBid(INITIAL_HIGHEST_BID);
       setBidValue(INITIAL_HIGHEST_BID + MINIMUM_INCREMENT);
+      setBidsVersion((v) => v + 1);
+      window.location.reload();
     } catch (err) {
       console.error("Erro ao limpar lances:", err);
       setError(err instanceof Error ? err.message : "Erro ao limpar lances");
@@ -221,7 +226,8 @@ export const BidProvider = ({ children }: { children: ReactNode }) => {
     fetchAllBids,
     clearAllBids,
     generateReport,
-    isLoading,
+  isLoading,
+  bidsVersion,
   };
 
   return <BidContext.Provider value={value}>{children}</BidContext.Provider>;
