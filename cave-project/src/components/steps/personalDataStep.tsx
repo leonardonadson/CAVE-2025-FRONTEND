@@ -68,7 +68,7 @@ const PersonalDataStep = () => {
   return (
     <div className="flex flex-col items-center text-white w-full">
       <h2 className="text-2xl sm:text-3xl font-bold my-8">INFORME OS SEUS DADOS</h2>
-      <form className="w-full flex flex-col gap-6">
+  <form className="w-full flex flex-col gap-6" autoComplete="off">
         <div>
           <label className="font-semibold mb-2 block" htmlFor="name">Nome</label>
           <input

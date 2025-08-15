@@ -39,7 +39,7 @@ export default function Login() {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-900 text-white">
-      <form
+  <form autoComplete="off"
         onSubmit={handleLogin}
         className="bg-black/40 p-6 rounded-xl w-80 border border-gray-700"
       >
