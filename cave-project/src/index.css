@@ -8,3 +8,7 @@ body,
   margin: 0;
   padding: 0;
 }
+
+a:hover, button:hover, [role="button"]:hover, .actionButton:hover {
+  cursor: pointer;
+}

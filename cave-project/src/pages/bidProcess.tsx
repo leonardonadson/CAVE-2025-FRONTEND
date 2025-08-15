@@ -47,12 +47,12 @@ const BidProcess = () => {
             <img
               src={logoCave}
               alt="Logo CAVE"
-              className="w-40 sm:w-48"
+              className="h-40 sm:h-28"
             />
             <img
               src={tocandoAVida}
               alt="Logo Tocando a Vida"
-              className="w-40 sm:w-48"
+              className="h-40 sm:h-32"
             />
           </div>
           <main className="flex-grow">
